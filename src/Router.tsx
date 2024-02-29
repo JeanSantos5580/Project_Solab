@@ -1,12 +1,17 @@
 import { Route, Routes } from 'react-router-dom'
 import { SolabSizer } from './pages/SolabSizer'
 import { DefaultLayout } from './layouts/DefaultLayout'
+import { Home } from './pages/Home'
 
 const routes = [
   {
-    path: '/',
+    path: '/solabSizer',
     element: <SolabSizer />
-  }
+  },
+  {
+    path: '/home',
+    element: <Home />
+  },
 ]
 
 export function Router() {
