@@ -1,5 +1,4 @@
 import { ReactNode } from 'react'
-import { ContainerSidebarItem } from './styles'
 
 type Props = {
   icon: ReactNode
@@ -8,9 +7,9 @@ type Props = {
 
 export function SidebarItem({ icon, title }: Props) {
   return (
-    <ContainerSidebarItem>
+    <div className="flex w-full h-fit rounded-lg items-center gap-4 size-4 text-gray-800 font-bold p-2 m-4 cursor-pointer hover:text-white hover:bg-orange-500 ">
       {icon}
-      <span>{title}</span>
-    </ContainerSidebarItem>
+      <span className="">{title}</span>
+    </div>
   )
 }
