@@ -9,7 +9,7 @@ export const GlobalStyle = createGlobalStyle`
 
 :focus{
     outline: 0;
-    box-shadow: 0 0 0 2px ${(props) => props.theme.colors.orange_500}
+    box-shadow: 0 0 0 2px ${props => props.theme.colors.orange_300}
 }
 
 *::-webkit-scrollbar {
@@ -17,19 +17,19 @@ export const GlobalStyle = createGlobalStyle`
 }
 
 *::-webkit-scrollbar-track {
-  background: ${(props) => props.theme.colors.gray_600};
+  background: ${props => props.theme.colors.gray_600};
   border-radius: 10px;
 }
 
 *::-webkit-scrollbar-thumb {
-  background: ${(props) => props.theme.colors.gray_700};
+  background: ${props => props.theme.colors.gray_700};
   border-radius: 10px;
 }
 
 
 body{
-    background: ${(props) => props.theme.background};
-    color: ${(props) => props.theme.color};
+    background: ${props => props.theme.background};
+    color: ${props => props.theme.color};
     -webkit-font-smoothing: antialiased;
 }
 

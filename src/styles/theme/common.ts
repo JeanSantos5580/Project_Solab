@@ -1,9 +1,10 @@
 export const commonStyles = {
   colors: {
-    white: '#fff',
+    white: '#FFFFFF',
     black: '#000',
 
-    gray_100: '#E1E1E6',
+    gray_100: '#F6F6F7',
+    gray_200: '#E1E1E6',
     gray_300: '#C4C4CC',
     gray_400: '#8D8D99',
     gray_500: '#7C7C8A',

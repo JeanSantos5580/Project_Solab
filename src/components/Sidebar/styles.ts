@@ -39,44 +39,11 @@ export const Content = styled.div`
     text-decoration: none;
   }
 `
-
-export const Logo = styled.img`
-  width: 133px;
-  height: 40px;
-  margin-right: 280px;
-
-  /* @media screen and (min-width: 384px) and (max-width: 880px) {
-    width: 80px;
-    height: 25px;
-  }
-
-  @media screen and (min-width: 880px) {
-  } */
-`
-export const Buttons = styled.div`
-  display: flex;
-  gap: 38px;
-  margin-right: 174px;
-
-  /* @media screen and (min-width: 384px) and (max-width: 880px) {
-    display: none;
-  }
-
-  @media screen and (min-width: 880px) {
-  } */
-`
-
-export const MenuButton = styled.button`
-  border: none;
-  background: transparent;
-
-  font-family: 'General Sans', sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 155%;
-  letter-spacing: 0.24px;
-
-  color: ${({ theme }) => theme.colors.black};
-
-  cursor: pointer;
+export const Background = styled.div`
+  background: ${({ theme }) => theme.colors.black};
+  opacity: 0.7;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
 `
