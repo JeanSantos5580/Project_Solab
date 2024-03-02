@@ -1,4 +1,6 @@
-type Props = {
+import { SelectHTMLAttributes } from 'react'
+
+type Props = SelectHTMLAttributes<HTMLSelectElement> & {
   placeholder: string
   data: string[]
 }
