@@ -1,8 +1,9 @@
 import { Rocket } from '@phosphor-icons/react'
 import { Button } from '../../components/Button'
-import { Input } from '../../components/Input'
+import { SelectInput } from '../../components/SelectInput'
 import { Section } from '../../components/Section'
 import { Footer } from '../../components/Footer'
+import { Input } from '../../components/Input'
 
 const states = ['Amapá', 'Acre', 'Roraima']
 
@@ -19,29 +20,28 @@ export function SolabSizer() {
         </small>
       </div>
       <Section title="Local">
-        <Input placeholder="Selecione o estado." data={states} />
-        <Input placeholder="Selecione o município." data={states} />
+        <SelectInput placeholder="Selecione o estado." data={states} />
+        <SelectInput placeholder="Selecione o município." data={states} />
       </Section>
       <Section title="Consumo">
-        <Input placeholder="Tipo de ligação." data={states} />
-        <Input placeholder="Consumo anual de energia?" data={states} />
+        <SelectInput placeholder="Tipo de ligação." data={states} />
+        <Input type='number' placeholder="Consumo anual de energia?" />
       </Section>
       <Section title="Módulos fotovoltaicos">
-        <Input placeholder="Selecione um fabricante." data={states} />
-        <Input placeholder="Selecione o modelo do módulo." data={states} />
+        <SelectInput placeholder="Selecione um fabricante." data={states} />
+        <SelectInput placeholder="Selecione o modelo do módulo." data={states} />
       </Section>
       <Section title="Posicionamento do Módulo">
-        <Input placeholder="Inclinação dos módulos (º)." data={states} />
-        <Input placeholder="Orientação dos módulos (º)." data={states} />
+        <Input type='number' placeholder="Inclinação dos módulos (º)." />
+        <Input type='number' placeholder="Orientação dos módulos (º)." />
       </Section>
       <Section title="Inversor">
-        <Input placeholder="Fabricante." data={states} />
+        <SelectInput placeholder="Fabricante." data={states} />
         <Button
           title="Determinar melhor configuração."
           icon={<Rocket size={24} />}
         />
       </Section>
-      <Footer />
     </main>
   )
 }
