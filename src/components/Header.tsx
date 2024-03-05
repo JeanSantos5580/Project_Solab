@@ -16,7 +16,7 @@ export function Header() {
       </div>
       <DotsThreeVertical
         weight="bold"
-        className="w-8 h-8 text-orange-600"
+        className="w-8 h-8 text-orange-600 cursor-pointer"
         onClick={handleOpenSidebar}
       />
       {openSidebar && <Sidebar active={setOpenSidebar} />}

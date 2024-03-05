@@ -1,50 +1,69 @@
-import { Rocket } from '@phosphor-icons/react'
-import { Button } from '../../components/Button'
-import { SelectInput } from '../../components/SelectInput'
 import { Section } from '../../components/Section'
-import { Input } from '../../components/Input'
-import { useForm } from 'react-hook-form'
 import {
   SolarimetricDataSchema,
   solarimetricDataSchema
 } from '../../schemas/SolarimetricData'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
-import { api } from '../../lib/axios'
+import { useSolarimetricData } from '../../hooks/useSolarimeticData'
+import { useForm } from 'react-hook-form'
 
 export function SolabSizer() {
-  const [states, setStates] = useState<SolarimetricDataSchema>()
-  const { register } = useForm<SolarimetricDataSchema>({
+  const [states, setStates] = useState<string[]>()
+  const [cities, setCities] = useState<string[]>()
+
+  const { statesData, citiesData, cityData, getCitiesByState, getCityData } =
+    useSolarimetricData()
+
+  const { register, watch } = useForm<SolarimetricDataSchema>({
     resolver: zodResolver(solarimetricDataSchema)
   })
 
-  async function getStates() {
-    await api.get('/').then(response => {
-      const state = response.data.map(
-        (state: SolarimetricDataSchema) => state.state
-      )
+  const selectedState = watch('state')
+  const selectedCity = watch('city')
 
-      const filteredStates = state.filter((stateName: string) => {
-        if (!state[stateName]) {
-          state[stateName] = true
-          return true
-        }
-        return false
-      })
+  function filterStates(statesArray: SolarimetricDataSchema[]) {
+    const statesNames = statesArray.map(
+      (state: SolarimetricDataSchema) => state.state
+    )
 
-      const filteredNormalizedStateNames = filteredStates.map(
-        (stateName: string) => stateName.toUpperCase()
-      )
+    const filteredStatesNames = statesNames?.filter(
+      (stateName: string, index, statesNamesArray) => {
+        return statesNamesArray.indexOf(stateName) === index
+      }
+    )
 
-      console.log(filteredNormalizedStateNames)
+    const filteredNormalizedStateNames = filteredStatesNames.map(
+      (stateName: string) => stateName.toUpperCase()
+    )
 
-      setStates(filteredNormalizedStateNames)
-    })
+    setStates(filteredNormalizedStateNames)
   }
-  
+
+  function filterCities() {
+    const citiesNames = citiesData.map(city => city.city)
+    setCities(citiesNames)
+  }
+
   useEffect(() => {
-    getStates()
-  }, [])
+    filterStates(statesData)
+    filterCities()
+  }, [statesData, citiesData])
+
+  useEffect(() => {
+    if (!selectedState) {
+      return
+    }
+    getCitiesByState(selectedState)
+  }, [selectedState])
+
+  useEffect(() => {
+    if (!selectedState || !selectedCity) {
+      return
+    } else {
+      getCityData(selectedState, selectedCity)
+    }
+  }, [selectedState, selectedCity])
 
   return (
     <main className="overflow-y-auto">
@@ -58,15 +77,57 @@ export function SolabSizer() {
         </small>
       </div>
 
-      <Section title="Local">
-        <SelectInput
-          placeholder="Selecione o estado."
-          data={states}
-          {...register('state')}
-        />
-        {/* <SelectInput placeholder="Selecione o município." data={states} /> */}
-      </Section>
-      {/* <Section title="Consumo">
+      <form>
+        <Section title="Local">
+          <select
+            className="w-full flex items-center rounded-lg h-12 px-2 border border-orange-600 cursor-pointer text-gray-400 focus: outline-none focus:ring focus:ring-orange-400"
+            {...register('state')}
+          >
+            <option
+              value=""
+              disabled
+              selected
+              defaultValue=""
+              className="disabled:text-gray-300"
+            >
+              Selecione um estado
+            </option>
+            {states?.map((state, key) => (
+              <option key={key} value={state}>
+                {state}
+              </option>
+            ))}
+          </select>
+          <select
+            className="w-full flex items-center rounded-lg h-12 px-2 border border-orange-600 cursor-pointer text-gray-400 focus: outline-none focus:ring focus:ring-orange-400"
+            disabled={!selectedState}
+            {...register('city')}
+          >
+            <option
+              value=""
+              disabled
+              selected
+              defaultValue=""
+              className="disabled:text-gray-300"
+            >
+              Selecione um município
+            </option>
+            {cities?.map((state, key) => (
+              <option key={key} value={state}>
+                {state}
+              </option>
+            ))}
+          </select>
+          {cityData && (
+            <div>
+              <h1>{cityData[0]?.jan}</h1>
+              <h1>{cityData[0]?.feb}</h1>
+              <h1>{cityData[0]?.mar}</h1>
+              <h1>{cityData[0]?.apr}</h1>
+            </div>
+          )}
+        </Section>
+        {/* <Section title="Consumo">
         <SelectInput placeholder="Tipo de ligação." data={states} />
         <Input type="number" placeholder="Consumo anual de energia?" />
       </Section>
@@ -88,6 +149,7 @@ export function SolabSizer() {
           icon={<Rocket size={24} />}
         />
       </Section> */}
+      </form>
     </main>
   )
 }

@@ -2,16 +2,16 @@ import { SelectHTMLAttributes } from 'react'
 
 type Props = SelectHTMLAttributes<HTMLSelectElement> & {
   placeholder: string
-  data: string[]
+  options: string[] | undefined
 }
 
-export function SelectInput({ placeholder, data }: Props) {
+export function SelectInput({ placeholder, options, ...rest }: Props) {
   return (
-    <select className="w-full flex items-center rounded-lg h-12 px-2 border border-orange-600 cursor-pointer text-gray-400 focus: outline-none focus:ring focus:ring-orange-400">
+    <select className="w-full flex items-center rounded-lg h-12 px-2 border border-orange-600 cursor-pointer text-gray-400 focus: outline-none focus:ring focus:ring-orange-400" {...rest}>
       <option value="" disabled selected className="disabled:text-gray-300">
         {placeholder}
       </option>
-      {data?.map((state, key) => (
+      {options?.map((state, key) => (
         <option key={key} value={state}>
           {state}
         </option>
