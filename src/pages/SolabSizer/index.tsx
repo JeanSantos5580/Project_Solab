@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { useSolarimetricData } from '../../hooks/useSolarimeticData'
 import { useForm } from 'react-hook-form'
+import { BarChartCustom } from '../../charts/BarChart'
 
 export function SolabSizer() {
   const [states, setStates] = useState<string[]>()
@@ -118,13 +119,12 @@ export function SolabSizer() {
               </option>
             ))}
           </select>
-          {cityData && (
-            <div>
-              <h1>{cityData[0]?.jan}</h1>
-              <h1>{cityData[0]?.feb}</h1>
-              <h1>{cityData[0]?.mar}</h1>
-              <h1>{cityData[0]?.apr}</h1>
+          {cityData ? (
+            <div className="w-[500] h-80 flex justify-center">
+              <BarChartCustom data={cityData} />
             </div>
+          ) : (
+            ''
           )}
         </Section>
         {/* <Section title="Consumo">
