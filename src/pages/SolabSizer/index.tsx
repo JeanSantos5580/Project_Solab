@@ -16,7 +16,7 @@ export function SolabSizer() {
   const { statesData, citiesData, cityData, getCitiesByState, getCityData } =
     useSolarimetricData()
 
-  const { register, watch } = useForm<SolarimetricDataSchema>({
+  const { register, watch, reset } = useForm<SolarimetricDataSchema>({
     resolver: zodResolver(solarimetricDataSchema)
   })
 
@@ -63,11 +63,15 @@ export function SolabSizer() {
       return
     } else {
       getCityData(selectedState, selectedCity)
+      reset({
+        state: '',
+        city: ''
+      })
     }
   }, [selectedState, selectedCity])
 
   return (
-    <main className="overflow-y-auto">
+    <main>
       <h1 className="mb-8 text-center font-bold text-3xl text-orange-600">
         Solab Sizer
       </h1>
@@ -127,11 +131,11 @@ export function SolabSizer() {
             ''
           )}
         </Section>
-        {/* <Section title="Consumo">
+      {/* <Section title="Consumo">
         <SelectInput placeholder="Tipo de ligação." data={states} />
         <Input type="number" placeholder="Consumo anual de energia?" />
-      </Section>
-      <Section title="Módulos fotovoltaicos">
+      </Section> */}
+     {/*  <Section title="Módulos fotovoltaicos">
         <SelectInput placeholder="Selecione um fabricante." data={states} />
         <SelectInput
           placeholder="Selecione o modelo do módulo."

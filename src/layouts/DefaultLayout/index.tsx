@@ -4,7 +4,7 @@ import { Footer } from '../../components/Footer'
 
 export function DefaultLayout() {
   return (
-    <div className="max-w-7xl flex-col">
+    <div className="container mx-auto flex-col">
       <Header />
       <Outlet />
       <Footer />

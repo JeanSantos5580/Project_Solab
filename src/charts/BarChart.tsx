@@ -41,24 +41,29 @@ export function BarChartCustom({ data }: Props) {
   ]
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
-      <BarChart width={300} height={40} data={irradiation}>
-        <XAxis dataKey={'month'} />
-        <YAxis
-          label={{
-            value: 'Irradiação média diária (kWh/m2xdia)',
-            angle: -90,
-            textAnchor: 'middle',
-            style: {
-              fontSize: '12px'
-            }
-          }}
-        />
-        <CartesianGrid />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="Gd" fill="#ff9c1c" />
-      </BarChart>
-    </ResponsiveContainer>
+    <div className="flex flex-col w-full space-y-4">
+      <small className="font-bold text-center">
+        Localidade: {cityData.city}, {cityData.state}
+      </small>
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart width={300} height={40} data={irradiation}>
+          <XAxis dataKey={'month'} />
+          <YAxis
+            label={{
+              value: 'Irradiação média diária (kWh/m2xdia)',
+              angle: -90,
+              textAnchor: 'middle',
+              style: {
+                fontSize: '12px'
+              }
+            }}
+          />
+          <CartesianGrid />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="Gd" fill="#ff9c1c" />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
   )
 }
