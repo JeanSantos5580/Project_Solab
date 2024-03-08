@@ -1,27 +1,43 @@
 import { Section } from '../../components/Section'
-import {
-  SolarimetricDataSchema,
-  solarimetricDataSchema
-} from '../../schemas/SolarimetricData'
+import { SolarimetricDataSchema } from '../../schemas/SolarimetricData'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { useSolarimetricData } from '../../hooks/useSolarimeticData'
-import { useForm } from 'react-hook-form'
+import { SubmitHandler, get, useForm } from 'react-hook-form'
 import { BarChartCustom } from '../../charts/BarChart'
+import { FormSchema, formSchema } from '../../schemas/FormSchema'
+import { Input } from '../../components/Input'
+import { Button } from '../../components/Button'
+import { usePhotovoltaicDimensioning } from '../../hooks/usePhotovoltaicDimensioning'
 
 export function SolabSizer() {
   const [states, setStates] = useState<string[]>()
   const [cities, setCities] = useState<string[]>()
+  const [hsp, setHsp] = useState<number>(0)
 
   const { statesData, citiesData, cityData, getCitiesByState, getCityData } =
     useSolarimetricData()
 
-  const { register, watch, reset } = useForm<SolarimetricDataSchema>({
-    resolver: zodResolver(solarimetricDataSchema)
+  const {
+    calc_emm,
+    calc_ed,
+    calc_e,
+    total_panels_power,
+    total_panels_qtd,
+    inverter_dimensioning
+  } = usePhotovoltaicDimensioning()
+
+  const { register, handleSubmit, watch, reset } = useForm<FormSchema>({
+    resolver: zodResolver(formSchema)
   })
 
-  const selectedState = watch('state')
-  const selectedCity = watch('city')
+  const conection_types = ['singlePhase', 'twoPhase', 'threePhase']
+
+  const selectedState = watch('solarimetricData.state')
+  const selectedCity = watch('solarimetricData.city')
+  const annual_consumption = watch('annual_consumption')
+  const selected_connection = watch('connection_type')
+  const pannel_power = watch('pannel_power')
 
   function filterStates(statesArray: SolarimetricDataSchema[]) {
     const statesNames = statesArray.map(
@@ -46,6 +62,26 @@ export function SolabSizer() {
     setCities(citiesNames)
   }
 
+  function getHsp() {
+    if (cityData.length > 0) {
+      const annual: number = cityData[0].annual
+      setHsp(annual)
+    }
+  }
+
+  function calcVariants(annual: number) {
+    const emm = calc_emm(annual)
+    const ed = calc_ed(emm)
+    const e = calc_e(ed, selected_connection)
+    const tpp = total_panels_power(e, hsp)
+    const tpq = total_panels_qtd(tpp, pannel_power)
+    const inverter = inverter_dimensioning(tpp)
+    console.log('tpp', tpp)
+    console.log('tpq', tpq)
+    console.log('inverter', inverter)
+    return tpq
+  }
+
   useEffect(() => {
     filterStates(statesData)
     filterCities()
@@ -63,12 +99,39 @@ export function SolabSizer() {
       return
     } else {
       getCityData(selectedState, selectedCity)
-      reset({
-        state: '',
-        city: ''
-      })
     }
   }, [selectedState, selectedCity])
+
+  useEffect(() => {
+    if (!selectedState || !selectedCity) {
+      return
+    } else {
+      getHsp()
+    }
+  }, [selectedState, selectedCity, getHsp])
+
+  useEffect(() => {
+    if (
+      !selectedState ||
+      !selectedCity ||
+      !annual_consumption ||
+      !selected_connection ||
+      !pannel_power ||
+      !selected_connection
+    ) {
+      return
+    } else {
+      calcVariants(annual_consumption)
+    }
+  }, [
+    selectedState,
+    selectedCity,
+    annual_consumption,
+    selected_connection,
+    pannel_power,
+    selected_connection,
+    calcVariants
+  ])
 
   return (
     <main>
@@ -82,12 +145,9 @@ export function SolabSizer() {
         </small>
       </div>
 
-      <form>
+      <form onSubmit={() => {}}>
         <Section title="Local">
-          <select
-            className="w-full flex items-center rounded-lg h-12 px-2 border border-orange-600 cursor-pointer text-gray-400 focus: outline-none focus:ring focus:ring-orange-400"
-            {...register('state')}
-          >
+          <select {...register('solarimetricData.state')}>
             <option
               value=""
               disabled
@@ -104,9 +164,8 @@ export function SolabSizer() {
             ))}
           </select>
           <select
-            className="w-full flex items-center rounded-lg h-12 px-2 border border-orange-600 cursor-pointer text-gray-400 focus: outline-none focus:ring focus:ring-orange-400"
             disabled={!selectedState}
-            {...register('city')}
+            {...register('solarimetricData.city')}
           >
             <option
               value=""
@@ -131,28 +190,37 @@ export function SolabSizer() {
             ''
           )}
         </Section>
-      {/* <Section title="Consumo">
-        <SelectInput placeholder="Tipo de ligação." data={states} />
-        <Input type="number" placeholder="Consumo anual de energia?" />
-      </Section> */}
-     {/*  <Section title="Módulos fotovoltaicos">
-        <SelectInput placeholder="Selecione um fabricante." data={states} />
-        <SelectInput
-          placeholder="Selecione o modelo do módulo."
-          data={states}
-        />
-      </Section>
-      <Section title="Posicionamento do Módulo">
-        <Input type="number" placeholder="Inclinação dos módulos (º)." />
-        <Input type="number" placeholder="Orientação dos módulos (º)." />
-      </Section>
-      <Section title="Inversor">
-        <SelectInput placeholder="Fabricante." data={states} />
-        <Button
-          title="Determinar melhor configuração."
-          icon={<Rocket size={24} />}
-        />
-      </Section> */}
+        <Section title="Consumo">
+          <select {...register('connection_type')}>
+            <option
+              value=""
+              disabled
+              selected
+              defaultValue=""
+              className="disabled:text-gray-300"
+            >
+              Selecione seu tipo de ligação
+            </option>
+            {conection_types?.map((connection_type, key) => (
+              <option key={key} value={connection_type}>
+                {connection_type}
+              </option>
+            ))}
+          </select>
+          <input
+            type="text"
+            placeholder="Consumo anual de energia?"
+            {...register('annual_consumption')}
+          />
+        </Section>
+        <Section title="Módulos fotovoltaicos">
+          <input
+            type="text"
+            placeholder="Selecione a potência do módulo."
+            {...register('pannel_power')}
+          />
+        </Section>
+        <button type="button">Gerar</button>
       </form>
     </main>
   )
