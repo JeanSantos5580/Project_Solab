@@ -13,10 +13,6 @@ export const useSolarimetricData = () => {
     })
   }
 
-  useEffect(() => {
-    getStates()
-  }, [])
-
   const getCitiesByState = (stateName: string) => {
     api.get(`/${stateName}`).then(response => {
       setCitiesData(response.data)
@@ -29,6 +25,10 @@ export const useSolarimetricData = () => {
       setCityData(response.data)
     })
   }
+  
+  useEffect(() => {
+    getStates()
+  }, [])
 
-  return {statesData, citiesData, cityData, getCitiesByState, getCityData}
+  return { statesData, citiesData, cityData, getCitiesByState, getCityData }
 }

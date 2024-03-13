@@ -1,43 +1,53 @@
-import { Section } from '../../components/Section'
-import { SolarimetricDataSchema } from '../../schemas/SolarimetricData'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
-import { useSolarimetricData } from '../../hooks/useSolarimeticData'
-import { SubmitHandler, get, useForm } from 'react-hook-form'
-import { BarChartCustom } from '../../charts/BarChart'
-import { FormSchema, formSchema } from '../../schemas/FormSchema'
-import { Input } from '../../components/Input'
+
+import { Section } from '../../components/Section'
 import { Button } from '../../components/Button'
+
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+import { useSolarimetricData } from '../../hooks/useSolarimeticData'
 import { usePhotovoltaicDimensioning } from '../../hooks/usePhotovoltaicDimensioning'
+
+import { FormSchema, formSchema } from '../../schemas/FormSchema'
+import { SolarimetricDataSchema } from '../../schemas/SolarimetricData'
+
+import { BarChartCustom } from '../../charts/BarChart'
+
+import { Files } from '@phosphor-icons/react'
+import { useNavigate } from 'react-router-dom'
 
 export function SolabSizer() {
   const [states, setStates] = useState<string[]>()
   const [cities, setCities] = useState<string[]>()
   const [hsp, setHsp] = useState<number>(0)
 
+  const [ed, setEd] = useState<number | undefined>(0)
+  const [e, setE] = useState<number | undefined>(0)
+  const [tpp, setTpp] = useState<number | undefined>(0)
+  const [tpq, setTpq] = useState<number | undefined>(0)
+  const [inverter, setInverter] = useState<number | undefined>(0)
+
   const { statesData, citiesData, cityData, getCitiesByState, getCityData } =
     useSolarimetricData()
 
   const {
-    calc_emm,
-    calc_ed,
-    calc_e,
+    calculate_daily_energy_consumption,
     total_panels_power,
     total_panels_qtd,
     inverter_dimensioning
   } = usePhotovoltaicDimensioning()
 
-  const { register, handleSubmit, watch, reset } = useForm<FormSchema>({
+  const { register, handleSubmit, watch } = useForm<FormSchema>({
     resolver: zodResolver(formSchema)
   })
 
-  const conection_types = ['singlePhase', 'twoPhase', 'threePhase']
-
-  const selectedState = watch('solarimetricData.state')
-  const selectedCity = watch('solarimetricData.city')
+  const selectedState = watch('state')
+  const selectedCity = watch('city')
   const annual_consumption = watch('annual_consumption')
-  const selected_connection = watch('connection_type')
   const pannel_power = watch('pannel_power')
+
+  const navigate = useNavigate()
 
   function filterStates(statesArray: SolarimetricDataSchema[]) {
     const statesNames = statesArray.map(
@@ -70,16 +80,15 @@ export function SolabSizer() {
   }
 
   function calcVariants(annual: number) {
-    const emm = calc_emm(annual)
-    const ed = calc_ed(emm)
-    const e = calc_e(ed, selected_connection)
-    const tpp = total_panels_power(e, hsp)
+    const ed = calculate_daily_energy_consumption(annual)
+    const tpp = total_panels_power(ed, hsp)
     const tpq = total_panels_qtd(tpp, pannel_power)
     const inverter = inverter_dimensioning(tpp)
-    console.log('tpp', tpp)
-    console.log('tpq', tpq)
-    console.log('inverter', inverter)
-    return tpq
+    setEd(ed)
+    setE(e)
+    setTpp(tpp)
+    setTpq(tpq)
+    setInverter(inverter)
   }
 
   useEffect(() => {
@@ -115,9 +124,7 @@ export function SolabSizer() {
       !selectedState ||
       !selectedCity ||
       !annual_consumption ||
-      !selected_connection ||
-      !pannel_power ||
-      !selected_connection
+      !pannel_power
     ) {
       return
     } else {
@@ -127,11 +134,14 @@ export function SolabSizer() {
     selectedState,
     selectedCity,
     annual_consumption,
-    selected_connection,
     pannel_power,
-    selected_connection,
     calcVariants
   ])
+
+  const handleSubmitForm: SubmitHandler<FormSchema> = (data: FormSchema) => {
+    console.log(data)
+    navigate('/report')
+  }
 
   return (
     <main>
@@ -145,9 +155,9 @@ export function SolabSizer() {
         </small>
       </div>
 
-      <form onSubmit={() => {}}>
+      <form onSubmit={handleSubmit(handleSubmitForm)}>
         <Section title="Local">
-          <select {...register('solarimetricData.state')}>
+          <select {...register('state')}>
             <option
               value=""
               disabled
@@ -163,10 +173,7 @@ export function SolabSizer() {
               </option>
             ))}
           </select>
-          <select
-            disabled={!selectedState}
-            {...register('solarimetricData.city')}
-          >
+          <select disabled={!selectedState} {...register('city')}>
             <option
               value=""
               disabled
@@ -182,16 +189,14 @@ export function SolabSizer() {
               </option>
             ))}
           </select>
-          {cityData ? (
+          {cityData.length > 0 && (
             <div className="w-[500] h-80 flex justify-center">
               <BarChartCustom data={cityData} />
             </div>
-          ) : (
-            ''
           )}
         </Section>
         <Section title="Consumo">
-          <select {...register('connection_type')}>
+          {/* <select {...register('connection_type')}>
             <option
               value=""
               disabled
@@ -206,11 +211,11 @@ export function SolabSizer() {
                 {connection_type}
               </option>
             ))}
-          </select>
+          </select> */}
           <input
             type="text"
             placeholder="Consumo anual de energia?"
-            {...register('annual_consumption')}
+            {...register('annual_consumption', { max: 75000 })}
           />
         </Section>
         <Section title="Módulos fotovoltaicos">
@@ -220,7 +225,26 @@ export function SolabSizer() {
             {...register('pannel_power')}
           />
         </Section>
-        <button type="button">Gerar</button>
+
+        {selectedState &&
+          selectedCity &&
+          annual_consumption &&
+          pannel_power && (
+            <div className="flex flex-col space-x- items-center justify-center mt-4 border border-orange-500 rounded-t-md p-4 font-semibold hover:bg-orange-200">
+              <h2>Consumo diário de energia: {ed} W/dia</h2>
+              <h2>Potência total de painéis: {tpp} kWp</h2>
+              <h2>Quantidade total de módulos necessários: {tpq}</h2>
+              <h2>Potência do inversor: {inverter} kWp</h2>
+            </div>
+          )}
+
+        <div className="my-8 flex justify-center">
+          <Button
+            type="submit"
+            icon={<Files size={24} />}
+            title="Gerar relatório"
+          />
+        </div>
       </form>
     </main>
   )

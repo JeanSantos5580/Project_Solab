@@ -1,10 +1,9 @@
 import { z } from 'zod'
-import { solarimetricDataSchema } from './SolarimetricData'
 
 export const formSchema = z.object({
-  solarimetricData: solarimetricDataSchema,
-  connection_type: z.enum(['singlePhase', 'twoPhase', 'threePhase']),
-  annual_consumption: z.coerce.number(),
+  state: z.string(),
+  city: z.string(),
+  annual_consumption: z.coerce.number().max(75000),
   pannel_power: z.coerce.number()
 })
 
