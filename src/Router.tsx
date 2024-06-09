@@ -6,6 +6,10 @@ import { Report } from './pages/Report'
 
 const routes = [
   {
+    path: '/',
+    element: <SolabSizer />
+  },
+  {
     path: '/home',
     element: <Home />
   },

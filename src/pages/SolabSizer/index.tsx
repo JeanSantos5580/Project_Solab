@@ -15,12 +15,12 @@ import { SolarimetricDataSchema } from '../../schemas/SolarimetricData'
 import { BarChartCustom } from '../../charts/BarChart'
 
 import { Files } from '@phosphor-icons/react'
-import { useNavigate } from 'react-router-dom'
 
 export function SolabSizer() {
   const [states, setStates] = useState<string[]>()
   const [cities, setCities] = useState<string[]>()
   const [hsp, setHsp] = useState<number>(0)
+  const [showReport, setShowReport] = useState(false)
 
   const [ed, setEd] = useState<number | undefined>(0)
   const [e, setE] = useState<number | undefined>(0)
@@ -44,10 +44,7 @@ export function SolabSizer() {
 
   const selectedState = watch('state')
   const selectedCity = watch('city')
-  const annual_consumption = watch('annual_consumption')
   const pannel_power = watch('pannel_power')
-
-  const navigate = useNavigate()
 
   function filterStates(statesArray: SolarimetricDataSchema[]) {
     const statesNames = statesArray.map(
@@ -91,6 +88,11 @@ export function SolabSizer() {
     setInverter(inverter)
   }
 
+  function calcVariantsAndShowReport(annual: number) {
+    calcVariants(annual)
+    setShowReport(true)
+  }
+
   useEffect(() => {
     filterStates(statesData)
     filterCities()
@@ -120,27 +122,11 @@ export function SolabSizer() {
   }, [selectedState, selectedCity, getHsp])
 
   useEffect(() => {
-    if (
-      !selectedState ||
-      !selectedCity ||
-      !annual_consumption ||
-      !pannel_power
-    ) {
-      return
-    } else {
-      calcVariants(annual_consumption)
-    }
-  }, [
-    selectedState,
-    selectedCity,
-    annual_consumption,
-    pannel_power,
-    calcVariants
-  ])
+    setCities([])
+  }, [selectedState])
 
   const handleSubmitForm: SubmitHandler<FormSchema> = (data: FormSchema) => {
-    console.log(data)
-    navigate('/report')
+    calcVariantsAndShowReport(data.annual_consumption)
   }
 
   return (
@@ -155,7 +141,7 @@ export function SolabSizer() {
         </small>
       </div>
 
-      <form onSubmit={handleSubmit(handleSubmitForm)}>
+      <form onSubmit={handleSubmit(handleSubmitForm)} className="mb-16">
         <Section title="Local">
           <select {...register('state')}>
             <option
@@ -196,22 +182,6 @@ export function SolabSizer() {
           )}
         </Section>
         <Section title="Consumo">
-          {/* <select {...register('connection_type')}>
-            <option
-              value=""
-              disabled
-              selected
-              defaultValue=""
-              className="disabled:text-gray-300"
-            >
-              Selecione seu tipo de ligação
-            </option>
-            {conection_types?.map((connection_type, key) => (
-              <option key={key} value={connection_type}>
-                {connection_type}
-              </option>
-            ))}
-          </select> */}
           <input
             type="text"
             placeholder="Consumo anual de energia?"
@@ -226,25 +196,31 @@ export function SolabSizer() {
           />
         </Section>
 
-        {selectedState &&
-          selectedCity &&
-          annual_consumption &&
-          pannel_power && (
-            <div className="flex flex-col space-x- items-center justify-center mt-4 border border-orange-500 rounded-t-md p-4 font-semibold hover:bg-orange-200">
-              <h2>Consumo diário de energia: {ed} W/dia</h2>
-              <h2>Potência total de painéis: {tpp} kWp</h2>
-              <h2>Quantidade total de módulos necessários: {tpq}</h2>
-              <h2>Potência do inversor: {inverter} kWp</h2>
-            </div>
-          )}
-
         <div className="my-8 flex justify-center">
           <Button
             type="submit"
+            onClick={() => setShowReport(!showReport)}
             icon={<Files size={24} />}
             title="Gerar relatório"
           />
         </div>
+
+        {showReport && (
+          <div className="flex flex-col space-x- items-center mt-4 mb-8 border-4 border-double border-orange-500 rounded-md p-4 font-semibold hover:bg-orange-200">
+            <h2 className="w-full text-left">
+              Consumo diário de energia: <b>{ed} W/dia</b>
+            </h2>
+            <h2 className="w-full text-left">
+              Potência total de painéis: <b>{tpp} kWp</b>
+            </h2>
+            <h2 className="w-full text-left">
+              Quantidade mínima de módulos necessários: <b>{tpq}</b>
+            </h2>
+            <h2 className="w-full text-left">
+              Potência do inversor: <b>{inverter} kWp</b>
+            </h2>
+          </div>
+        )}
       </form>
     </main>
   )
