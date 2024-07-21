@@ -45,6 +45,7 @@ export function SolabSizer() {
   const selectedState = watch('state')
   const selectedCity = watch('city')
   const pannel_power = watch('pannel_power')
+  const annual_consumption = watch('annual_consumption')
 
   function filterStates(statesArray: SolarimetricDataSchema[]) {
     const statesNames = statesArray.map(
@@ -75,6 +76,15 @@ export function SolabSizer() {
       setHsp(annual)
     }
   }
+
+  useEffect(() => {
+    if (!pannel_power || !hsp || pannel_power) {
+      return;
+    }
+
+    calcVariants(annual_consumption);
+
+  }, [pannel_power, hsp, annual_consumption]);
 
   function calcVariants(annual: number) {
     const ed = calculate_daily_energy_consumption(annual)
@@ -124,6 +134,10 @@ export function SolabSizer() {
   useEffect(() => {
     setCities([])
   }, [selectedState])
+
+useEffect(() => {
+  setShowReport(false);
+}, [pannel_power, watch('annual_consumption')]); //
 
   const handleSubmitForm: SubmitHandler<FormSchema> = (data: FormSchema) => {
     calcVariantsAndShowReport(data.annual_consumption)
@@ -176,7 +190,7 @@ export function SolabSizer() {
             ))}
           </select>
           {cityData.length > 0 && (
-            <div className="w-[500] h-80 flex justify-center">
+            <div className="animate-fadeIn w-[500] h-80 flex justify-center">
               <BarChartCustom data={cityData} />
             </div>
           )}
@@ -189,11 +203,16 @@ export function SolabSizer() {
           />
         </Section>
         <Section title="Módulos fotovoltaicos">
-          <input
-            type="text"
-            placeholder="Selecione a potência do módulo."
-            {...register('pannel_power')}
-          />
+          <select {...register('pannel_power')}>
+            <option value="" disabled selected defaultValue="">
+              Selecione a potência do módulo
+            </option>
+            <option value="460">460 Wp</option>
+            <option value="550">550 Wp</option>
+            <option value="555">555 Wp</option>
+            <option value="580">580 Wp</option>
+            <option value="585">585 Wp</option>
+          </select>
         </Section>
 
         <div className="my-8 flex justify-center">
@@ -206,9 +225,9 @@ export function SolabSizer() {
         </div>
 
         {showReport && (
-          <div className="flex flex-col space-x- items-center mt-4 mb-8 border-4 border-double border-orange-500 rounded-md p-4 font-semibold hover:bg-orange-200">
+          <div className="animate-fadeIn flex flex-col space-x- items-center mt-4 mb-8 border-4 border-double border-orange-500 rounded-md p-4 font-semibold hover:bg-orange-200">
             <h2 className="w-full text-left">
-              Consumo diário de energia: <b>{ed} W/dia</b>
+              Consumo diário de energia: <b>{ed} kWh</b>
             </h2>
             <h2 className="w-full text-left">
               Potência total de painéis: <b>{tpp} kWp</b>

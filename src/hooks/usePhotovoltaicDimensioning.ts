@@ -1,7 +1,7 @@
 export const usePhotovoltaicDimensioning = () => {
   const calculate_daily_energy_consumption = (annual_consumption: number) => {
     const dailyConsumption = annual_consumption / 365
-    return Number(dailyConsumption.toFixed(2)) // W
+    return Number(dailyConsumption.toFixed(2)) // kWh
   }
 
   const total_panels_power = (
