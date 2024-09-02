@@ -1,5 +1,5 @@
 import axios from 'axios'
 
 export const api = axios.create({
-  baseURL: 'https://api.webdev-js.com.br/api/sundata'
+  baseURL: 'http://localhost:3001/api/sundata'
 })
