@@ -198,7 +198,7 @@ useEffect(() => {
         <Section title="Consumo">
           <input
             type="text"
-            placeholder="Consumo anual de energia?"
+            placeholder="Consumo anual de energia (kWh)"
             {...register('annual_consumption', { max: 75000 })}
           />
         </Section>
@@ -207,9 +207,13 @@ useEffect(() => {
             <option value="" disabled selected defaultValue="">
               Selecione a potência do módulo
             </option>
+            <option value="335">335 Wp</option>
+            <option value="450">450 Wp</option>
             <option value="460">460 Wp</option>
+            <option value="530">530 Wp</option>
             <option value="550">550 Wp</option>
             <option value="555">555 Wp</option>
+            <option value="560">560 Wp</option>
             <option value="580">580 Wp</option>
             <option value="585">585 Wp</option>
           </select>
