@@ -210,6 +210,7 @@ useEffect(() => {
             </option>
             <option value="335">335 Wp</option>
             <option value="340">340 Wp</option>
+            <option value="405">405 Wp</option>
             <option value="450">450 Wp</option>
             <option value="460">460 Wp</option>
             <option value="470">470 Wp</option>
