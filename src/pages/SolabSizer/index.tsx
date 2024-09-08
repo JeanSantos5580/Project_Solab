@@ -15,6 +15,7 @@ import { SolarimetricDataSchema } from '../../schemas/SolarimetricData'
 import { BarChartCustom } from '../../charts/BarChart'
 
 import { Files } from '@phosphor-icons/react'
+import { PdfViewer } from '../../components/PdfViewer/pdfViewer'
 
 export function SolabSizer() {
   const [states, setStates] = useState<string[]>()
@@ -208,6 +209,7 @@ useEffect(() => {
               Selecione a potência do módulo
             </option>
             <option value="335">335 Wp</option>
+            <option value="340">340 Wp</option>
             <option value="450">450 Wp</option>
             <option value="460">460 Wp</option>
             <option value="530">530 Wp</option>
@@ -242,6 +244,7 @@ useEffect(() => {
             <h2 className="w-full text-left">
               Potência do inversor: <b>{inverter} kWp</b>
             </h2>
+            <PdfViewer/>
           </div>
         )}
       </form>
