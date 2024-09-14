@@ -24,6 +24,9 @@ export function SolabSizer() {
   const [showReport, setShowReport] = useState(false)
 
   const [ed, setEd] = useState<number | undefined>(0)
+  const [mae, setMae] = useState<number | undefined>(0)
+  const [monthGeneration, setMonthGeneration] = useState<number | undefined>(0)
+  const [annualGeneration, setAnnualGeneration] = useState<number | undefined>(0)
   const [e, setE] = useState<number | undefined>(0)
   const [tpp, setTpp] = useState<number | undefined>(0)
   const [tpq, setTpq] = useState<number | undefined>(0)
@@ -34,6 +37,9 @@ export function SolabSizer() {
 
   const {
     calculate_daily_energy_consumption,
+    calculate_month_average_energy_consumption,
+    calculate_month_generation,
+    calculate_anual_generation,
     total_panels_power,
     total_panels_qtd,
     inverter_dimensioning
@@ -83,26 +89,41 @@ export function SolabSizer() {
       return;
     }
 
-    calcVariants(annual_consumption);
+  calcVariants(annual_consumption);
 
   }, [pannel_power, hsp, annual_consumption]);
 
   function calcVariants(annual: number) {
     const ed = calculate_daily_energy_consumption(annual)
+    const mae = calculate_month_average_energy_consumption(annual)
     const tpp = total_panels_power(ed, hsp)
     const tpq = total_panels_qtd(tpp, pannel_power)
     const inverter = inverter_dimensioning(tpp)
     setEd(ed)
+    setMae(mae)
     setE(e)
     setTpp(tpp)
     setTpq(tpq)
     setInverter(inverter)
   }
 
+  function projectInfos(tpp: number | undefined, hsp: number) {
+    const monthGeneration = calculate_month_generation(tpp, hsp)
+    const annualGeneration = calculate_anual_generation(monthGeneration)
+    setMonthGeneration(monthGeneration)
+    setAnnualGeneration(annualGeneration)
+  }
+
   function calcVariantsAndShowReport(annual: number) {
     calcVariants(annual)
     setShowReport(true)
   }
+
+  useEffect(() => {
+    if (tpp !== undefined && hsp) {
+      projectInfos(tpp, hsp); // Chama somente quando tpp e hsp tiverem valores atualizados
+    }
+  }, [tpp, hsp]);
 
   useEffect(() => {
     filterStates(statesData)
@@ -233,6 +254,7 @@ useEffect(() => {
         </div>
 
         {showReport && (
+          <>
           <div className="animate-fadeIn flex flex-col space-x- items-center mt-4 mb-8 border-4 border-double border-orange-500 rounded-md p-4 font-semibold hover:bg-orange-200">
             <h2 className="w-full text-left">
               Consumo diário de energia: <b>{ed} kWh</b>
@@ -246,8 +268,21 @@ useEffect(() => {
             <h2 className="w-full text-left">
               Potência do inversor: <b>{inverter} kWp</b>
             </h2>
-            <PdfViewer/>
           </div>
+          <div>
+          <PdfViewer 
+          state={selectedState}
+          city={selectedCity}
+          monthConsumption={mae}
+          annualConsumption={annual_consumption}
+          monthGeneration={monthGeneration}
+          annualGeneration={annualGeneration}
+          panelPower={pannel_power}
+          totalPanels={tpq}
+          inverterPower={inverter}
+          />
+          </div>
+          </>
         )}
       </form>
     </main>

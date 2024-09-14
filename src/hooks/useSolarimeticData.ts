@@ -21,7 +21,6 @@ export const useSolarimetricData = () => {
 
   const getCityData = (stateName: string, cityName: string) => {
     api.get(`/${stateName}/${cityName}`).then(response => {
-      /* console.log('Response:', response.data) */
       setCityData(response.data)
     })
   }
