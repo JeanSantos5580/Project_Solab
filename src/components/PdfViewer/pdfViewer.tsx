@@ -4,7 +4,7 @@ import system from "../../assets/system.png"
 
 Font.register({ 
     family: 'Inter', 
-    src: 'http://fonts.gstatic.com/s/questrial/v6/MYWJ4lYm5dbZ1UBuYox79KCWcynf_cDxXwCLxiixG1c.ttf',
+    src: 'https://fonts.gstatic.com/s/questrial/v6/MYWJ4lYm5dbZ1UBuYox79KCWcynf_cDxXwCLxiixG1c.ttf',
     fontWeight: 'heavy'
 });
 
