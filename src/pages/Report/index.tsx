@@ -1,4 +1,4 @@
-import { Section } from '../../components/Section'
+/* import { Section } from '../../components/Section' */
 
 export function Report() {
   return (
@@ -9,7 +9,7 @@ export function Report() {
       <div className="px-4 mb-8">
         <small>Confira abaixo o relatório do seu sistema:</small>
       </div>
-      <Section title="Relatório">
+      {/* <Section title="Relatório">
         <div className="flex-col border border-orange-500 rounded-lg p-4 space-y-4">
           <div className="flex-col">
             <h5 className="font-bold text-sm ">Energia gerada anualmente: </h5>
@@ -74,7 +74,7 @@ export function Report() {
             </div>
           </div>
         </div>
-      </Section>
+      </Section> */}
     </main>
   )
 }

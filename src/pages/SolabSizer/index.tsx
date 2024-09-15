@@ -32,6 +32,22 @@ export function SolabSizer() {
   const [tpq, setTpq] = useState<number | undefined>(0)
   const [inverter, setInverter] = useState<number | undefined>(0)
 
+  const [showLocalizationBaloon, setShowLocalizationBaloon] = useState(false);
+  const [showConsumptionBaloon, setShowConsumptionBaloon] = useState(false);
+  const [showPannelBaloon, setShowPannelBaloon] = useState(false);
+
+  const handleLocalizationBaloon = () => {
+    setShowLocalizationBaloon(!showLocalizationBaloon);
+  };
+
+  const handleConsumptionBaloon = () => {
+    setShowConsumptionBaloon(!showConsumptionBaloon);
+  };
+
+  const handlePannelBaloon = () => {
+    setShowPannelBaloon(!showPannelBaloon);
+  };
+
   const { statesData, citiesData, cityData, getCitiesByState, getCityData } =
     useSolarimetricData()
 
@@ -178,7 +194,13 @@ useEffect(() => {
       </div>
 
       <form onSubmit={handleSubmit(handleSubmitForm)} className="mb-16">
-        <Section title="Local">
+        <Section 
+        title="Local" 
+        setShowBaloon={handleLocalizationBaloon} 
+        showBaloon={showLocalizationBaloon}
+        firstPhrase={'Estado. Ex.: Amapá.'}
+        secondPhrase={'Município. Ex.: Macapá.'}
+        >
           <select {...register('state')}>
             <option
               value=""
@@ -217,14 +239,26 @@ useEffect(() => {
             </div>
           )}
         </Section>
-        <Section title="Consumo">
-          <input
-            type="text"
-            placeholder="Consumo anual de energia (kWh)"
-            {...register('annual_consumption', { max: 75000 })}
-          />
+        <Section title="Consumo" 
+        setShowBaloon={handleConsumptionBaloon} 
+        showBaloon={showConsumptionBaloon}
+        firstPhrase={'Calculado pela soma dos consumos dos últimos 12 meses.'
+        }
+        secondPhrase={'(Geralmente o talão de energia traz essa informação.)'}
+        >
+            <input
+              type="text"
+              placeholder="Consumo anual de energia (kWh)"
+              {...register('annual_consumption', { max: 75000 })}
+            />
         </Section>
-        <Section title="Módulos fotovoltaicos">
+        <Section 
+        title="Módulos fotovoltaicos"
+        setShowBaloon={handlePannelBaloon} 
+        showBaloon={showPannelBaloon}
+        firstPhrase={'Selecione um valor desejado de potência para o painel.'}
+        secondPhrase='Ex. 470 Wp'
+        >
           <select {...register('pannel_power')}>
             <option value="" disabled selected defaultValue="">
               Selecione a potência do módulo
@@ -255,66 +289,66 @@ useEffect(() => {
 
         {showReport && (
           <>
-          <div className="animate-fadeIn flex flex-col space-x- items-center mt-4 mb-8 border-4 border-double border-orange-500 rounded-md p-4 font-semibold hover:bg-orange-200">
-            <h2 className="w-full text-left text-2xl mb-4">
-              PROJETO
-            </h2>
-            <h2 className="w-full text-left">
-              Consumo médio diário: <b>{ed} kWh/dia</b>
-            </h2>
-            <h2 className="w-full text-left">
-              Consumo médio mensal: <b>{mae} kWh/mês</b>
-            </h2>
-            <h2 className="w-full text-left">
-              Consumo médio anual: <b>{annual_consumption} kWh/ano</b>
-            </h2>
-            <h2 className="w-full text-left">
-              Geração média mensal estimada: <b>{monthGeneration} kWh/mês</b>
-            </h2>
-            <h2 className="w-full text-left">
-              Geração média anual estimada: <b>{annualGeneration} kWh/mês</b>
-            </h2>
-          </div>
-          <div className='flex justify-between gap-10'>
-            <div className="animate-fadeIn flex flex-col items-center w-full mt-4 mb-8 border-4 border-double border-orange-500 rounded-md p-4 font-semibold hover:bg-orange-200">
-            <h2 className="w-full text-left text-2xl mb-4">
-              MÓDULOS FOTOVOLTAICOS
-            </h2>
-            <h2 className="w-full text-left">
-              Potência do módulo: <b>{pannel_power} Wp</b>
-            </h2>
-            <h2 className="w-full text-left">
-              Potência total de painéis: <b>{tpp} kWp</b>
-            </h2>
-            <h2 className="w-full text-left">
-              Quantidade mínima de módulos necessários: <b>{tpq}</b>
-            </h2>
-            </div>
-            <div className="animate-fadeIn flex flex-col items-center w-full mt-4 mb-8 border-4 border-double border-orange-500 rounded-md p-4 font-semibold hover:bg-orange-200">
-              <h2 className="w-full text-left text-2xl mb-4">
-                INVERSOR
+            <div className="animate-fadeIn flex flex-col space-x- items-center mt-4 mb-8 border-4 border-double border-orange-500 rounded-md p-4 font-semibold hover:bg-orange-200">
+              <h2 className="w-full text-left text-lg sm:text-2xl mb-4">
+                PROJETO
               </h2>
-              <h2 className="w-full text-left">
-                Potência do inversor: <b>{inverter} kWp</b>
+              <h2 className="w-full text-left text-sm sm:text-base">
+                Consumo médio diário: <b>{ed} kWh/dia</b>
               </h2>
-              <h2 className="w-full text-left">
-                Quantidade: <b>1</b>
+              <h2 className="w-full text-left text-sm sm:text-base">
+                Consumo médio mensal: <b>{mae} kWh/mês</b>
+              </h2>
+              <h2 className="w-full text-left text-sm sm:text-base">
+                Consumo médio anual: <b>{annual_consumption} kWh/ano</b>
+              </h2>
+              <h2 className="w-full text-left text-sm sm:text-base">
+                Geração média mensal estimada: <b>{monthGeneration} kWh/mês</b>
+              </h2>
+              <h2 className="w-full text-left text-sm sm:text-base">
+                Geração média anual estimada: <b>{annualGeneration} kWh/mês</b>
               </h2>
             </div>
-          </div>
-          <div>
-          <PdfViewer 
-          state={selectedState}
-          city={selectedCity}
-          monthConsumption={mae}
-          annualConsumption={annual_consumption}
-          monthGeneration={monthGeneration}
-          annualGeneration={annualGeneration}
-          panelPower={pannel_power}
-          totalPanels={tpq}
-          inverterPower={inverter}
-          />
-          </div>
+            <div className='flex flex-col justify-between sm:flex-row sm:gap-10'>
+              <div className="animate-fadeIn flex flex-col items-center w-full mt-4 mb-8 border-4 border-double border-orange-500 rounded-md p-4 font-semibold hover:bg-orange-200">
+                <h2 className="w-full text-left text-lg sm:text-2xl mb-4">
+                  MÓDULOS FOTOVOLTAICOS
+                </h2>
+                <h2 className="w-full text-left text-sm sm:text-base">
+                  Potência do módulo: <b>{pannel_power} Wp</b>
+                </h2>
+                <h2 className="w-full text-left text-sm sm:text-base">
+                  Potência total de painéis: <b>{tpp} kWp</b>
+                </h2>
+                <h2 className="w-full text-left text-sm sm:text-base">
+                  Quantidade de módulos: <b>{tpq}</b>
+                </h2>
+              </div>
+              <div className="animate-fadeIn flex flex-col items-center w-full mt-4 mb-8 border-4 border-double border-orange-500 rounded-md p-4 font-semibold hover:bg-orange-200">
+                <h2 className="w-full text-left text-lg sm:text-2xl mb-4">
+                  INVERSOR
+                </h2>
+                <h2 className="w-full text-left text-sm sm:text-base">
+                  Potência do inversor: <b>{inverter} kWp</b>
+                </h2>
+                <h2 className="w-full text-left text-sm sm:text-base">
+                  Quantidade: <b>1</b>
+                </h2>
+              </div>
+            </div>
+            <div>
+              <PdfViewer 
+                state={selectedState}
+                city={selectedCity}
+                monthConsumption={mae}
+                annualConsumption={annual_consumption}
+                monthGeneration={monthGeneration}
+                annualGeneration={annualGeneration}
+                panelPower={pannel_power}
+                totalPanels={tpq}
+                inverterPower={inverter}
+              />
+            </div>
           </>
         )}
       </form>
