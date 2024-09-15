@@ -256,8 +256,32 @@ useEffect(() => {
         {showReport && (
           <>
           <div className="animate-fadeIn flex flex-col space-x- items-center mt-4 mb-8 border-4 border-double border-orange-500 rounded-md p-4 font-semibold hover:bg-orange-200">
+            <h2 className="w-full text-left text-2xl mb-4">
+              PROJETO
+            </h2>
             <h2 className="w-full text-left">
-              Consumo diário de energia: <b>{ed} kWh</b>
+              Consumo médio diário: <b>{ed} kWh/dia</b>
+            </h2>
+            <h2 className="w-full text-left">
+              Consumo médio mensal: <b>{mae} kWh/mês</b>
+            </h2>
+            <h2 className="w-full text-left">
+              Consumo médio anual: <b>{annual_consumption} kWh/ano</b>
+            </h2>
+            <h2 className="w-full text-left">
+              Geração média mensal estimada: <b>{monthGeneration} kWh/mês</b>
+            </h2>
+            <h2 className="w-full text-left">
+              Geração média anual estimada: <b>{annualGeneration} kWh/mês</b>
+            </h2>
+          </div>
+          <div className='flex justify-between gap-10'>
+            <div className="animate-fadeIn flex flex-col items-center w-full mt-4 mb-8 border-4 border-double border-orange-500 rounded-md p-4 font-semibold hover:bg-orange-200">
+            <h2 className="w-full text-left text-2xl mb-4">
+              MÓDULOS FOTOVOLTAICOS
+            </h2>
+            <h2 className="w-full text-left">
+              Potência do módulo: <b>{pannel_power} Wp</b>
             </h2>
             <h2 className="w-full text-left">
               Potência total de painéis: <b>{tpp} kWp</b>
@@ -265,9 +289,18 @@ useEffect(() => {
             <h2 className="w-full text-left">
               Quantidade mínima de módulos necessários: <b>{tpq}</b>
             </h2>
-            <h2 className="w-full text-left">
-              Potência do inversor: <b>{inverter} kWp</b>
-            </h2>
+            </div>
+            <div className="animate-fadeIn flex flex-col items-center w-full mt-4 mb-8 border-4 border-double border-orange-500 rounded-md p-4 font-semibold hover:bg-orange-200">
+              <h2 className="w-full text-left text-2xl mb-4">
+                INVERSOR
+              </h2>
+              <h2 className="w-full text-left">
+                Potência do inversor: <b>{inverter} kWp</b>
+              </h2>
+              <h2 className="w-full text-left">
+                Quantidade: <b>1</b>
+              </h2>
+            </div>
           </div>
           <div>
           <PdfViewer 
