@@ -257,7 +257,7 @@ useEffect(() => {
         setShowBaloon={handlePannelBaloon} 
         showBaloon={showPannelBaloon}
         firstPhrase={'Selecione um valor desejado de potência para o painel.'}
-        secondPhrase='Ex. 470 Wp'
+        secondPhrase='Em caso de dúvida na escolha, recomenda-se o de 550 Wp.'
         >
           <select {...register('pannel_power')}>
             <option value="" disabled selected defaultValue="">
@@ -270,7 +270,7 @@ useEffect(() => {
             <option value="460">460 Wp</option>
             <option value="470">470 Wp</option>
             <option value="530">530 Wp</option>
-            <option value="550">550 Wp</option>
+            <option value="550">550 Wp (Sugestão de escolha)</option>
             <option value="555">555 Wp</option>
             <option value="560">560 Wp</option>
             <option value="580">580 Wp</option>
@@ -336,7 +336,7 @@ useEffect(() => {
                 </h2>
               </div>
             </div>
-            <div>
+            <div className='hidden sm:inline-flex w-full'>
               <PdfViewer 
                 state={selectedState}
                 city={selectedCity}
