@@ -26,8 +26,8 @@ export function Section({ title, setShowBaloon, showBaloon, firstPhrase, secondP
           {showBaloon && 
             <InputInfoBaloon 
               firstPhrase={firstPhrase} 
-              secondPhrase={secondPhrase} 
-              isVisible={showBaloon}/>
+              secondPhrase={secondPhrase}
+              />
           }
         </button>
       </header>
