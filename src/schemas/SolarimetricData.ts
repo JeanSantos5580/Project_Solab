@@ -1,10 +1,11 @@
 import { z } from 'zod'
 
 export const solarimetricDataSchema = z.object({
-  lon: z.number(),
-  lat: z.number(),
+  id: z.number().optional(),
+  lon: z.number().nullable(),
+  lat: z.number().nullable(),
   city: z.string(),
-  class: z.string(),
+  class: z.string().nullable(),
   state: z.string(),
   annual: z.number(),
   jan: z.number(),
@@ -21,4 +22,4 @@ export const solarimetricDataSchema = z.object({
   dec: z.number()
 })
 
-export type SolarimetricDataSchema = z.infer<typeof solarimetricDataSchema>
+export type SolarimetricData = z.infer<typeof solarimetricDataSchema>
